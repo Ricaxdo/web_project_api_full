@@ -32,3 +32,16 @@ module.exports.validateUserId = celebrate({
     userId: Joi.string().hex().length(24).required(),
   }),
 });
+
+module.exports.validateCreateCard = celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    link: Joi.string().pattern(urlPattern).required(),
+  }),
+});
+
+module.exports.validateCardId = celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    cardId: Joi.string().hex().length(24).required(),
+  }),
+});

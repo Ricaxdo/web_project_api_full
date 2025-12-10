@@ -6,6 +6,7 @@ const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
 const DEFAULT_ERROR = 500;
 const UNAUTHORIZED = 401;
+const FORBIDDEN = 403;
 
 const { JWT_SECRET = 'dev-secret' } = process.env;
 
@@ -25,6 +26,11 @@ const handleUserError = (err, res) => {
     return res
       .status(NOT_FOUND)
       .send({ message: err.message || 'Usuario no encontrado' });
+  }
+  if (err.statusCode === FORBIDDEN) {
+    return res
+      .status(FORBIDDEN)
+      .send({ message: err.message || 'No tienes permiso para esta acción' });
   }
 
   console.error(err);
