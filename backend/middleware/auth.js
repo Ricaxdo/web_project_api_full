@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
 
   // Verificar que exista y empiece con "Bearer "
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res.status(401).send({ message: 'Autorización requerida' });
+    return res.status(403).send({ message: 'Autorización requerida' });
   }
 
   // Extraer el token
@@ -25,6 +25,6 @@ module.exports = (req, res, next) => {
     return next();
   } catch (err) {
     // Token inválido o expirado
-    return res.status(401).send({ message: 'Token inválido o expirado' });
+    return res.status(403).send({ message: 'Token inválido o expirado' });
   }
 };
