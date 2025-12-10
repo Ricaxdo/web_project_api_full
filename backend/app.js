@@ -1,14 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose'); // <-- Mongoose
 const { errors } = require('celebrate');
+const cors = require('cors');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const { validateCreateUser } = require('./middleware/validation');
 const auth = require('./middleware/auth');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 // Conexión a MongoDB
 mongoose
@@ -31,6 +33,9 @@ db.once('open', () => {
   console.log('Conectado a MongoDB: aroundb');
 });
 
+// Habilitar CORS
+app.use(cors());
+
 // Middleware para parsear JSON
 app.use(express.json());
 
@@ -45,7 +50,11 @@ app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
+// Middleware de manejo de errores de celebrate
 app.use(errors());
+
+// Middleware de manejo centralizado de errores personalizado
+app.use(errorHandler);
 
 // Middleware para rutas no definidas → devuelve 404 siempre
 app.use((req, res) => {
