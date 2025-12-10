@@ -5,7 +5,10 @@ const cors = require('cors');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
-const { validateCreateUser } = require('./middleware/validation');
+const {
+  validateCreateUser,
+  validateLogin,
+} = require('./middleware/validation');
 const auth = require('./middleware/auth');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -40,7 +43,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rutas de autenticación
-app.post('/signin', login);
+app.post('/signin', validateLogin, login);
 app.post('/signup', validateCreateUser, createUser);
 
 // Middleware de autenticación
