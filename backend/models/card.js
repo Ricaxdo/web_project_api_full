@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const urlRegex = require('./validators/urlRegex'); // <-- igual que arriba
+const urlRegex = require('./validators/urlRegex');
 
 const cardSchema = new mongoose.Schema({
   name: {
