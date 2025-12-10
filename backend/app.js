@@ -3,6 +3,9 @@ const mongoose = require('mongoose'); // <-- Mongoose
 const { errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
+const { validateCreateUser } = require('./middleware/validation');
+const auth = require('./middleware/auth');
 
 const app = express();
 const PORT = 3000;
@@ -19,14 +22,6 @@ mongoose
 
 const db = mongoose.connection;
 
-// Middleware temporal de autorización
-app.use((req, res, next) => {
-  req.user = {
-    _id: '692ad209b630c2ff7caa5350',
-  };
-  next();
-});
-
 // Eventos de conexión
 db.on('error', (err) => {
   console.error('Error de conexión a MongoDB:', err);
@@ -38,6 +33,13 @@ db.once('open', () => {
 
 // Middleware para parsear JSON
 app.use(express.json());
+
+// Rutas de autenticación
+app.post('/signin', login);
+app.post('/signup', validateCreateUser, createUser);
+
+// Middleware de autenticación
+app.use(auth);
 
 // Registrar rutas
 app.use('/users', usersRouter);
