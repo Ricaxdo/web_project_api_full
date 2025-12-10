@@ -2,13 +2,12 @@ const express = require('express');
 const {
   getUsers,
   getUserById,
-  createUser,
   updateAvatar,
   updateProfile,
+  getCurrentUser,
 } = require('../controllers/users');
 
 const {
-  validateCreateUser,
   validateUpdateProfile,
   validateUpdateAvatar,
   validateUserId,
@@ -18,9 +17,9 @@ const router = express.Router();
 
 router.get('/', getUsers);
 
-router.get('/:userId', validateUserId, getUserById);
+router.get('/me', getCurrentUser);
 
-router.post('/', validateCreateUser, createUser);
+router.get('/:userId', validateUserId, getUserById);
 
 router.patch('/me', validateUpdateProfile, updateProfile);
 
