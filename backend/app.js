@@ -17,14 +17,14 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const { PORT = 4000, MONGO_URL = 'mongodb://localhost:27017/aroundb' } =
+const { PORT = 4000, MONGODB_URI = 'mongodb://localhost:27017/aroundb' } =
   process.env;
 
 // Conexión a MongoDB
 mongoose
-  .connect(MONGO_URL)
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log('Conectado a MongoDB:', MONGO_URL);
+    console.log('Conectado a MongoDB:', MONGODB_URI);
   })
   .catch((err) => {
     console.error('Error de conexión a MongoDB:', err);
