@@ -10,6 +10,7 @@ const {
   validateLogin,
 } = require('./middleware/validation');
 const auth = require('./middleware/auth');
+const { requestLogger, errorLogger } = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -42,6 +43,9 @@ app.use(cors());
 // Middleware para parsear JSON
 app.use(express.json());
 
+// Middleware de logging de solicitudes
+app.use(requestLogger);
+
 // Rutas de autenticación
 app.post('/signin', validateLogin, login);
 app.post('/signup', validateCreateUser, createUser);
@@ -52,6 +56,9 @@ app.use(auth);
 // Registrar rutas
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+// Middleware de logging de errores
+app.use(errorLogger);
 
 // Middleware de manejo de errores de celebrate
 app.use(errors());
