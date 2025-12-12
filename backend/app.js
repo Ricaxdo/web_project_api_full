@@ -1,7 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose'); // <-- Mongoose
 const { errors } = require('celebrate');
 const cors = require('cors');
+
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -14,13 +17,14 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = 4000;
+const { PORT = 4000, MONGODB_URI = 'mongodb://localhost:27017/aroundb' } =
+  process.env;
 
 // Conexión a MongoDB
 mongoose
-  .connect('mongodb://localhost:27017/aroundb')
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log('Conectado a MongoDB: aroundb');
+    console.log('Conectado a MongoDB:', MONGODB_URI);
   })
   .catch((err) => {
     console.error('Error de conexión a MongoDB:', err);

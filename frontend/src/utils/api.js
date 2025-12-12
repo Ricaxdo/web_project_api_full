@@ -1,3 +1,5 @@
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+
 class Api {
   constructor({ baseUrl }) {
     this._baseUrl = baseUrl.replace(/\/+$/, '');
@@ -103,5 +105,5 @@ class Api {
 
 // OJO: deja la baseUrl como la que usabas para “Alrededor de los EE.UU.”
 export const api = new Api({
-  baseUrl: 'http://localhost:4000',
+  baseUrl: API_BASE_URL,
 });
