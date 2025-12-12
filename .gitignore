@@ -1,0 +1,10 @@
+# Global
+node_modules
+.DS_Store
+*.log
+logs
+
+# Opcional bloquear envs
+.env
+backend/.env
+frontend/.env

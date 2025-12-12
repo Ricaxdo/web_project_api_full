@@ -1,65 +1,37 @@
 const Card = require('../models/card');
 
-const BAD_REQUEST = 400;
 const NOT_FOUND = 404;
-const DEFAULT_ERROR = 500;
-
-// Función helper para centralizar el manejo de errores de tarjetas
-const handleCardError = (err, res) => {
-  // Errores de validación de Mongoose (schema inválido)
-  if (err.name === 'ValidationError') {
-    return res
-      .status(BAD_REQUEST)
-      .send({ message: 'Datos inválidos para crear tarjeta' });
-  }
-  // CastError → IDs de Mongo mal formados
-  if (err.name === 'CastError') {
-    return res
-      .status(BAD_REQUEST)
-      .send({ message: 'ID de tarjeta inválido' });
-  }
-  // Errores manuales con statusCode = 404
-  if (err.statusCode === NOT_FOUND) {
-    return res
-      .status(NOT_FOUND)
-      .send({ message: err.message || 'Tarjeta no encontrada' });
-  }
-  // Cualquier otra cosa → error 500
-  console.error(err);
-  return res
-    .status(DEFAULT_ERROR)
-    .send({ message: 'Error interno del servidor' });
-};
+const FORBIDDEN = 403;
 
 // GET /cards → todas las tarjetas
-module.exports.getCards = async (req, res) => {
+module.exports.getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
     return res.send(cards);
   } catch (err) {
-    return handleCardError(err, res);
+    return next(err);
   }
 };
 
 // POST /cards → crea una nueva tarjeta
-module.exports.createCard = async (req, res) => {
+module.exports.createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
 
     const card = await Card.create({
       name,
       link,
-      owner: req.user._id, // owner viene del middleware temporal
+      owner: req.user._id,
     });
 
     return res.status(201).send(card);
   } catch (err) {
-    return handleCardError(err, res);
+    return next(err);
   }
 };
 
 // DELETE /cards/:cardId → elimina una tarjeta
-module.exports.deleteCard = async (req, res) => {
+module.exports.deleteCard = async (req, res, next) => {
   try {
     const { cardId } = req.params;
 
@@ -69,11 +41,18 @@ module.exports.deleteCard = async (req, res) => {
       throw error;
     });
 
+    // Verificar que el usuario actual es el propietario de la tarjeta
+    if (card.owner.toString() !== req.user._id) {
+      const error = new Error('No tienes permiso para borrar esta tarjeta');
+      error.statusCode = FORBIDDEN;
+      throw error;
+    }
+
     await card.deleteOne();
 
     return res.send({ message: 'Tarjeta eliminada correctamente' });
   } catch (err) {
-    return handleCardError(err, res);
+    return next(err);
   }
 };
 
@@ -83,7 +62,7 @@ module.exports.likeCard = async (req, res, next) => {
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
-      { new: true },
+      { new: true }
     );
 
     if (!updatedCard) {
@@ -102,7 +81,7 @@ module.exports.dislikeCard = async (req, res, next) => {
     const updatedCard = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } },
-      { new: true },
+      { new: true }
     );
 
     if (!updatedCard) {
