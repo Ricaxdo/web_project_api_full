@@ -2,7 +2,7 @@
 
 Proyecto Sprint 19 de TripleTen: **“Alrededor de los EE. UU.”** con **frontend en React + backend en Node/Express + MongoDB Atlas**, desplegados con una arquitectura moderna en **Google Cloud Run** (serverless, contenedores y HTTPS automático).
 
-> El despliegue está hecho Google Cloud RUN que la propuesta clásica de “VM + Nginx + PM2”.
+> El despliegue está hecho Google Cloud RUN y no con la propuesta clásica de “VM + Nginx + PM2”.
 
 ---
 
