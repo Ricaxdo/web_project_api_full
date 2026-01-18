@@ -1,4 +1,4 @@
-# web_project_around_fullstack
+# web_project_around_fullstack DEPRECATED
 
 Proyecto Sprint 19 de TripleTen: **“Alrededor de los EE. UU.”** con **frontend en React + backend en Node/Express + MongoDB Atlas**, desplegados con una arquitectura moderna en **Google Cloud Run** (serverless, contenedores y HTTPS automático).
 
